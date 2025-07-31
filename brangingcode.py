@@ -13,7 +13,7 @@ elif choice==4:
 else:
     print("Invalid choice")
 """
-
+"""
 a = int(input("Enter the first number:"))
 b = int(input("Enter the second number:"))
 print("1=Addition\n2=Subtraction\n3=Multiplication\n4=Division")
@@ -29,5 +29,37 @@ match choice:
         print(a/b)
     case _:
         print("Invalid choice")
+"""
+"""
+for i in "python":
+    print(i)
 
+for j in {79,"python",8.98,28}:
+    print(j)
+
+for k in ["cherry",1.8,75]:
+    print(k)
+
+for l in ("fort",24,7.5):
+    print(l)
+
+for m in {"name":"Hadi","age":20}:
+    print(m)
+"""
+'''
+for i in range(5):
+    print(i)
+'''
+'''
+num = int(input("Enter a number: "))
+j = int(input("Enter starting number: "))
+k = int(input("Enter ending number: "))
+
+for i in range(j, k + 1):
+    if i%7==0:
+        print(num,"*",i,"=",num*i)
+'''
+
+for i in range(1,6):
+    print("* "*i)
 
