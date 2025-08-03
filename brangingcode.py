@@ -1,4 +1,5 @@
-"""a = int(input("Enter the first number:"))
+"""
+a = int(input("Enter the first number:"))
 b = int(input("Enter the second number:"))
 print("1=Addition\n2=Subtraction\n3=Multiplication\n4=Division")
 choice=int(input("Enter your choice:"))
@@ -54,12 +55,33 @@ for i in range(5):
 num = int(input("Enter a number: "))
 j = int(input("Enter starting number: "))
 k = int(input("Enter ending number: "))
-
 for i in range(j, k + 1):
     if i%7==0:
         print(num,"*",i,"=",num*i)
 '''
-
+'''
 for i in range(1,6):
     print("* "*i)
+'''
+'''
+num = int(input("Enter a number: "))
+fact=1
+for i in range(1,num+1):
+    fact=fact*i
+print("Factorial of ",num,"is",fact)
+'''
+'''
+my_list=["apple","banana","Anar","orange"]
+for item in my_list:
+    if item[0]=="a" or item[-1]=="e":
+        print(item)
+'''
+'''
+my_list=["oneteam",8.2,"apple",38,"python",3.83,12]
+print(my_list[-1:-8:-2])
+'''
 
+for r in range(5,0,-1):
+    for s in range(r):
+        print("*",end=" ")
+    print()
