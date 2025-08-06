@@ -28,9 +28,11 @@ print("🛒 Final Shopping List:")
 for item in shopping_list:
     print("-", item)
   '''
-
+'''
 #print words starting vowels
 cars = ["Alto", "Maruti", "Ertiga", "Baleno"]
 for car in cars:
     if car[0].lower() in 'aeiou':
         print(car)
+'''
+

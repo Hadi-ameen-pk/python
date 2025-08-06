@@ -80,8 +80,85 @@ for item in my_list:
 my_list=["oneteam",8.2,"apple",38,"python",3.83,12]
 print(my_list[-1:-8:-2])
 '''
-
+'''
 for r in range(5,0,-1):
     for s in range(r):
         print("*",end=" ")
     print()
+'''
+#pattern printing
+'''
+rows=5
+for i in range(1,rows+1):
+    num=i
+    k=rows-1
+    for j in range(1,i+1):
+        print(num,end=" ")
+        num+=k
+        k-=1
+    print("")
+'''
+#print 1 to 5 usng while loop
+''' 
+num=1
+while num<=5:
+    print(num,end=" ")
+    num+=1
+'''
+#multiplication table
+'''
+count=1
+num=int(input("Enter a number: "))
+while count<=10:
+    print(count,"*",num,"=",count*num)
+    count+=1
+'''
+#control statement in for loop
+'''
+for i in range(1,11):
+    if i==5:
+        break
+    print(i,end=" ")
+'''
+#cntrol statement in while loop
+'''
+count=1
+num=int(input("Enter a number: "))
+while count<=10:
+    if count==5:
+        count+=1
+        break
+    print(count,"*",num,"=",count*num)
+    count+=1
+'''
+'''
+i=1
+while i<=10:
+    if i==5:
+        i+=1
+        continue
+    print(i,end=" ")
+    i+=1
+'''
+#while loop choice
+'''
+while True:
+    num1=int(input("Enter first number: "))
+    num2=int(input("Enter second number: "))
+    print("1.Addition\n2.Subtraction\n3.Multiplication\n4.Division")
+    choice=int(input("Enter your choice:"))
+    if choice==1:
+       print(num1+num2)
+    elif choice==2:
+       print(num1-num2)
+    elif choice==3:
+       print(num1*num2)
+    elif choice==4:
+        print(num1/num2)
+    else:
+        print("Invalid choice")
+    con=input("Do you want to continue(y/n)?")
+    if con.lower() != 'y':
+        break
+'''
+
