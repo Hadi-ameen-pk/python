@@ -1,3 +1,4 @@
+#choice using if_elif_else
 """
 a = int(input("Enter the first number:"))
 b = int(input("Enter the second number:"))
@@ -14,6 +15,7 @@ elif choice==4:
 else:
     print("Invalid choice")
 """
+#choice using match
 """
 a = int(input("Enter the first number:"))
 b = int(input("Enter the second number:"))
@@ -31,6 +33,7 @@ match choice:
     case _:
         print("Invalid choice")
 """
+#datatypes
 """
 for i in "python":
     print(i)
@@ -47,10 +50,12 @@ for l in ("fort",24,7.5):
 for m in {"name":"Hadi","age":20}:
     print(m)
 """
+#forloop
 '''
 for i in range(5):
     print(i)
 '''
+#pattern
 '''
 num = int(input("Enter a number: "))
 j = int(input("Enter starting number: "))
@@ -63,6 +68,7 @@ for i in range(j, k + 1):
 for i in range(1,6):
     print("* "*i)
 '''
+#factorial
 '''
 num = int(input("Enter a number: "))
 fact=1
@@ -76,6 +82,7 @@ for item in my_list:
     if item[0]=="a" or item[-1]=="e":
         print(item)
 '''
+#list
 '''
 my_list=["oneteam",8.2,"apple",38,"python",3.83,12]
 print(my_list[-1:-8:-2])
