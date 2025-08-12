@@ -14,10 +14,10 @@ text="PYthon"
 print(text.title())
 '''
 # upper case character to lowercase and viceversa
-'''
+
 text="PYthon"
 print(text.swapcase())
-'''
+
 # convert the first character of a string to uppercase
 text="PYthon"
 print(text.capitalize())
