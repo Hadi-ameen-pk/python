@@ -3,3 +3,5 @@ class greetings:
     def display():
         print("Good Morning")
 greetings.display()
+
+

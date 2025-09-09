@@ -1,6 +1,6 @@
 class MathOperations:
     @classmethod
-    def add_and_check(cls, total):
+    def check(cls, total):
         if total % 2 == 0:
             print(total, "is Even")
         else:
