@@ -169,6 +169,7 @@ while True:
         break
 '''
 #prime or not
+'''
 n=int(input("Enter a number:"))
 if n>1:
     for i in range(2,n):
@@ -179,3 +180,21 @@ if n>1:
          print(n," is prime number")
 else:
     print(n,"is not a prime number")
+'''
+#cgpt static method
+'''
+class MathOperations:
+    @staticmethod
+    def add(a, b):
+        return a + b
+    @staticmethod
+    def check_even_odd(n):
+        if n % 2 == 0:
+            return f"{n} is Even"
+        else:
+            return f"{n} is Odd"
+# Main program
+result = MathOperations.add(4, 6)   # sum = 10
+print("Sum:", result)
+print(MathOperations.check_even_odd(result))
+'''
