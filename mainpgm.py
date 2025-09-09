@@ -1,3 +1,3 @@
-from even_add import evenodd
+from even_add import add
 
-evenodd()
+add()
