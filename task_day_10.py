@@ -13,7 +13,7 @@ for num in numbers:
         break
 else:
        print("Number not found!")
-       
+
 #exercise 3
 secret = 7
 for attempt in range(3):
