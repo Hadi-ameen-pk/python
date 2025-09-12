@@ -21,7 +21,7 @@ class Item(ABC):
     def return_item(self):
         self.__available = True
         print(f"'{self._title}' returned successfully.")
-*# Inheritance & Polymorphism
+# Inheritance & Polymorphism
 # ------------------------------
 class Book(Item):
     def __init__(self, title, author, pages):
