@@ -203,10 +203,7 @@ print(MathOperations.check_even_odd(result))
 # List of favorite foods
 favorite_foods = ["Pizza", "Biryani", "Burger", "Pasta", "Ice Cream"]
 
-# Using for loop to print
-for food in favorite_foods:
-    print(f"I love eating {food}.")
-# List of favorite foods
+# Using for loo# List of favorite foods
 favorite_foods = ["Pizza", "Biryani", "Burger", "Pasta", "Ice Cream"]
 
 # Using for loop to print
