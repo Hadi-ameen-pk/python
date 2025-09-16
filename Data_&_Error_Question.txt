@@ -1,0 +1,57 @@
+## Project Question
+**"Student Management System"**
+Build a **Python program** that:
+1. Stores student details (**name, roll number, marks in different subjects**) using appropriate data structures.
+2. Allows:
+   * Adding new students
+   * Updating marks
+   * Displaying all student details
+   * Searching for a student by roll number or name
+3. Uses **lists, dictionaries, tuples, sets, string operations, list comprehensions, shallow & deep copy, error handling** where needed.
+---
+## Hints (How to use each topic)
+### **Day 15 – List**
+* Use a **list** to store multiple students.
+```python
+students = []
+```
+### **Day 16 – List (continued), List Comprehensions**
+* Use list comprehension to quickly find students scoring above 90.
+```python
+toppers = [s for s in students if s["marks"]["Math"] > 90]
+```
+### **Day 17 – Strings**
+* Use string methods to handle inputs (like `.title()` for names).
+```python
+name = input("Enter name: ").title()
+```
+### **Day 18 – Dictionary, zip**
+* Each student can be stored as a dictionary.
+* Use `zip()` to combine subjects and marks.
+```python
+subjects = ["Math", "Science", "English"]
+marks = [90, 85, 88]
+student = {"name": "Ali", "roll": 1, "marks": dict(zip(subjects, marks))}
+```
+### **Day 19 – Tuple, Set**
+* Store a student's roll number and name as a tuple (unique identity).
+* Use a set to ensure no duplicate roll numbers.
+```python
+unique_rolls = set()
+if student["roll"] in unique_rolls:
+    print("Duplicate roll not allowed!")
+```
+### **Day 20 – Shallow Copy & Deep Copy, Error handling**
+* Use `deepcopy` when creating a backup of the student list.
+```python
+import copy
+backup = copy.deepcopy(students)
+```
+* Use `try-except` to handle invalid inputs.
+```python
+try:
+    roll = int(input("Enter roll number: "))
+except ValueError:
+    print("Invalid number!")
+```
+---
