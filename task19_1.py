@@ -1,0 +1,5 @@
+days=("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
+print(days[0])
+print(days[-1])
+print(days[1:4])
+print(days.index("Wednesday"))
