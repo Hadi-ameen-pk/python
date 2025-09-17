@@ -1,5 +1,4 @@
 import re
-import json
 
 students = []
 unique_rolls = set()
@@ -38,13 +37,19 @@ def login(user_data):
     for _ in range(3):
         e = input("Enter email: ")
         p = input("Enter password: ")
-        if e == user_data["email"] and p == user_data["password"]:
+        if e == user_data.get("email") and p == user_data.get("password"):
             print("Login successful!\n")
             return True
         else:
             print("Invalid credentials, try again.")
     print("Too many failed attempts. Exiting...")
     backup_data()   # Auto-save on failed login
+    return False
+
+# ---------- Logout ----------
+def logout():
+    print("Logging out...")
+    backup_data()
     return False
 
 # ---------- Change Email ----------
@@ -76,7 +81,15 @@ def change_password(user_data):
 # ---------- Student Functions ----------
 def add_student():
     try:
-        name = input("Enter student name: ").title()
+        while True:
+            name = input("Enter student name: ").strip().title()
+            if not name:
+                print("Name cannot be empty!")
+            elif not all(x.isalpha() or x.isspace() for x in name):
+                print("Name must contain only letters and spaces!")
+            else:
+                break
+
         roll = int(input("Enter roll number: "))
         if roll in unique_rolls:
             print("Roll number already exists!")
@@ -106,12 +119,13 @@ def add_student():
     except Exception as e:
         print("Error:", e)
 
-# ---------- Display Student ----------
+# ---------- Display Students (Sorted by Roll No) ----------
 def display_students():
     if not students:
         print("No students available")
         return
-    for s in students:
+    sorted_students = sorted(students, key=lambda s: s['roll'])
+    for s in sorted_students:
         print(f"Roll: {s['roll']}, Name: {s['name']}, Marks: {s['marks']}")
 
 # ---------- Search Student ----------
@@ -141,7 +155,28 @@ def update_marks():
     except ValueError:
         print("Invalid input")
 
-# ---------- Topper Function ----------
+# ---------- Remove Subject ----------
+def remove_subject():
+    try:
+        roll = int(input("Enter roll number of the student: "))
+        for s in students:
+            if s["roll"] == roll:
+                if not s["marks"]:
+                    print("No subjects to remove for this student.")
+                    return
+                print(f"Subjects available: {', '.join(s['marks'].keys())}")
+                subject = input("Enter subject to remove: ").title()
+                if subject in s["marks"]:
+                    del s["marks"][subject]
+                    print(f"Subject '{subject}' removed successfully!")
+                else:
+                    print("Subject not found for this student")
+                return
+        print("Roll not found")
+    except ValueError:
+        print("Invalid input")
+
+# ---------- Topper Function (Sorted by Marks Desc) ----------
 def topper():
     if not students:
         print("No students available")
@@ -153,39 +188,78 @@ def topper():
         print(f"No student has subject '{subject}'.")
         return
 
-    highest = max(s["marks"].get(subject, 0) for s in students)
-    top_students = [s for s in students if s["marks"].get(subject, 0) == highest]
+    students_with_subject = [s for s in students if subject in s["marks"]]
+    sorted_students = sorted(students_with_subject, key=lambda s: s["marks"][subject], reverse=True)
+
+    highest_mark = sorted_students[0]["marks"][subject]
+    top_students = [s for s in sorted_students if s["marks"][subject] == highest_mark]
 
     print(f"\nTopper(s) in {subject}:")
     for s in top_students:
         print(f"Roll: {s['roll']}, Name: {s['name']}, Marks: {s['marks'][subject]}")
 
-# ---------- Backup Data ----------
+# ---------- Backup Data (Avoid Duplicate Backups) ----------
 def backup_data():
-    data = {
-        "students": students,
-        "user": user_data
-    }
-    with open("backup.json", "w") as f:
-        json.dump(data, f, indent=4)
-    print("Backup saved to backup.json")
+    backup_str = "\n=== Backup Data ===\n"
+    backup_str += "User:\n"
+    backup_str += f"Email: {user_data.get('email', '')}\n"
+    backup_str += f"Password: {user_data.get('password', '')}\n\n"
+    backup_str += "Students:\n"
+    for s in students:
+        backup_str += f"Roll: {s['roll']}, Name: {s['name']}, Marks: {s['marks']}\n"
+
+    try:
+        with open("backup.txt", "r") as f:
+            existing_data = f.read()
+    except FileNotFoundError:
+        existing_data = ""
+
+    if backup_str.strip() in existing_data:
+        print("Backup already exists, skipping duplicate entry.")
+        return
+
+    with open("backup.txt", "a") as f:
+        f.write(backup_str)
+    print("Backup saved to backup.txt")
 
 # ---------- Load Backup ----------
 def load_backup():
     global students, unique_rolls, user_data
     try:
-        with open("backup.json", "r") as f:
-            data = json.load(f)
-            students = data.get("students", [])
-            user_data = data.get("user", {})
+        with open("backup.txt", "r") as f:
+            lines = f.readlines()
+        current_section = None
+        students = []
+        user_data = {}
+        for line in lines:
+            line = line.strip()
+            if line.startswith("User:"):
+                current_section = "user"
+            elif line.startswith("Students:"):
+                current_section = "students"
+            elif current_section == "user" and line.startswith("Email:"):
+                user_data["email"] = line.split("Email:")[1].strip()
+            elif current_section == "user" and line.startswith("Password:"):
+                user_data["password"] = line.split("Password:")[1].strip()
+            elif current_section == "students" and line.startswith("Roll:"):
+                parts = line.split(",")
+                roll = int(parts[0].split("Roll:")[1].strip())
+                name = parts[1].split("Name:")[1].strip()
+                marks_str = ",".join(parts[2:]).split("Marks:")[1].strip()
+                marks = {}
+                for m in marks_str.strip("{} ").split(","):
+                    if ":" in m:
+                        key, val = m.split(":")
+                        marks[key.strip().strip("'").strip('"')] = int(val.strip())
+                students.append({"name": name, "roll": roll, "marks": marks})
         unique_rolls = {s["roll"] for s in students}
-        print("Backup loaded successfully!")
+        if students or user_data:
+            print("Backup loaded successfully!")
     except FileNotFoundError:
         print("No backup found, starting fresh.")
 
 # ---------- Main Program ----------
 load_backup()
-
 print("\n=== Welcome to Student Management System ===")
 print("1. Register (new user)")
 print("2. Login (existing user)")
@@ -205,14 +279,16 @@ if login(user_data):
     while True:
         print("\n====== Student Management System ======")
         print("1. Add Student")
-        print("2. Display Students")
+        print("2. Display Students (Sorted by Roll No)")
         print("3. Search Student")
         print("4. Update Marks")
-        print("5. Show Topper in a Subject")
+        print("5. Show Topper in a Subject (Sorted by Marks Desc)")
         print("6. Create Backup")
         print("7. Change Email")
         print("8. Change Password")
-        print("9. Exit")
+        print("9. Remove Subject")
+        print("10. Logout")
+        print("11. Exit")
         choice = input("Enter choice: ")
         if choice == "1":
             add_student()
@@ -231,9 +307,16 @@ if login(user_data):
         elif choice == "8":
             change_password(user_data)
         elif choice == "9":
+            remove_subject()
+        elif choice == "10":
+            if not logout():
+                print("You have been logged out.")
+                break
+        elif choice == "11":
             print("Saving data before exit...")
-            backup_data()   # Auto-backup on exit
+            backup_data()
             print("Exiting program...")
             break
+
         else:
             print("Invalid choice, try again.")
