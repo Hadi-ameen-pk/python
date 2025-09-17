@@ -1,0 +1,15 @@
+{
+    "students": [
+        {
+            "name": "Midun",
+            "roll": 55,
+            "marks": {
+                "Ct": 90
+            }
+        }
+    ],
+    "user": {
+        "email": "achu@gmail.com",
+        "password": "Akhila@123"
+    }
+}

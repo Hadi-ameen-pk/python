@@ -1,16 +1,16 @@
-import copy
 import re
 import json
 
 students = []
 unique_rolls = set()
+user_data = {}
 
 # Email validation regex
 pattern = r"[a-z0-9]+@[a-zA-Z]+\.(com|in|org)"
 
 # ---------- Register User ----------
 def register():
-    print("=== User Registration ===")
+    print("=== Create Account ===")
     while True:
         email = input("Set email: ")
         if re.fullmatch(pattern, email):
@@ -34,6 +34,7 @@ def register():
 
 # ---------- Login ----------
 def login(user_data):
+    print("=== Sign In ===")
     for _ in range(3):
         e = input("Enter email: ")
         p = input("Enter password: ")
@@ -43,6 +44,7 @@ def login(user_data):
         else:
             print("Invalid credentials, try again.")
     print("Too many failed attempts. Exiting...")
+    backup_data()   # Auto-save on failed login
     return False
 
 # ---------- Change Email ----------
@@ -79,22 +81,32 @@ def add_student():
         if roll in unique_rolls:
             print("Roll number already exists!")
             return
-        subjects = ["Math", "Science", "English"]
-        marks = []
-        for sub in subjects:
+
+        marks = {}
+        while True:
+            subject = input("Enter subject name (or press Enter to finish): ").title()
+            if subject == "":
+                break
             try:
-                m = int(input(f"Enter marks for {sub}: "))
-                marks.append(m)
+                m = int(input(f"Enter marks for {subject}: "))
             except ValueError:
                 print("Invalid input, setting marks = 0")
-                marks.append(0)
-        student = {"name": name, "roll": roll, "marks": dict(zip(subjects, marks))}
+                m = 0
+            marks[subject] = m
+
+        if not marks:
+            print("No subjects entered, student not added.")
+            return
+
+        student = {"name": name, "roll": roll, "marks": marks}
         students.append(student)
         unique_rolls.add(roll)
         print("Student added successfully!")
+
     except Exception as e:
         print("Error:", e)
 
+# ---------- Display Student ----------
 def display_students():
     if not students:
         print("No students available")
@@ -102,6 +114,7 @@ def display_students():
     for s in students:
         print(f"Roll: {s['roll']}, Name: {s['name']}, Marks: {s['marks']}")
 
+# ---------- Search Student ----------
 def search_student():
     search = input("Enter roll or name to search: ").title()
     for s in students:
@@ -110,46 +123,83 @@ def search_student():
             return
     print("Student not found")
 
+# ---------- Update Marks ----------
 def update_marks():
     try:
         roll = int(input("Enter roll number to update: "))
         for s in students:
             if s["roll"] == roll:
-                subject = input("Enter subject (Math/Science/English): ").title()
+                subject = input("Enter subject name: ").title()
                 if subject in s["marks"]:
                     new_mark = int(input(f"Enter new marks for {subject}: "))
                     s["marks"][subject] = new_mark
                     print("Marks updated successfully!")
                     return
-                print("Invalid subject")
+                print("Subject not found for this student")
                 return
         print("Roll not found")
     except ValueError:
         print("Invalid input")
 
 # ---------- Topper Function ----------
-def topper(subject):
+def topper():
     if not students:
         print("No students available")
         return
 
-    # Find highest mark in subject
-    highest = max(s["marks"][subject] for s in students)
+    subject = input("Enter subject to find topper: ").title()
+    available_subjects = {sub for s in students for sub in s["marks"]}
+    if subject not in available_subjects:
+        print(f"No student has subject '{subject}'.")
+        return
 
-    # Get all students with that mark
-    top_students = [s for s in students if s["marks"][subject] == highest]
+    highest = max(s["marks"].get(subject, 0) for s in students)
+    top_students = [s for s in students if s["marks"].get(subject, 0) == highest]
 
     print(f"\nTopper(s) in {subject}:")
     for s in top_students:
         print(f"Roll: {s['roll']}, Name: {s['name']}, Marks: {s['marks'][subject]}")
 
+# ---------- Backup Data ----------
 def backup_data():
-    with open("students_backup.json", "w") as f:
-        json.dump(students, f, indent=4)
-    print("Backup saved to students_backup.json")
+    data = {
+        "students": students,
+        "user": user_data
+    }
+    with open("backup.json", "w") as f:
+        json.dump(data, f, indent=4)
+    print("Backup saved to backup.json")
+
+# ---------- Load Backup ----------
+def load_backup():
+    global students, unique_rolls, user_data
+    try:
+        with open("backup.json", "r") as f:
+            data = json.load(f)
+            students = data.get("students", [])
+            user_data = data.get("user", {})
+        unique_rolls = {s["roll"] for s in students}
+        print("Backup loaded successfully!")
+    except FileNotFoundError:
+        print("No backup found, starting fresh.")
 
 # ---------- Main Program ----------
-user_data = register()
+load_backup()
+
+print("\n=== Welcome to Student Management System ===")
+print("1. Register (new user)")
+print("2. Login (existing user)")
+choice = input("Enter choice: ")
+
+if choice == "1":
+    user_data = register()
+elif choice == "2":
+    if not user_data:
+        print("No existing user found, please register first.")
+        user_data = register()
+else:
+    print("Invalid choice, defaulting to Register.")
+    user_data = register()
 
 if login(user_data):
     while True:
@@ -158,13 +208,11 @@ if login(user_data):
         print("2. Display Students")
         print("3. Search Student")
         print("4. Update Marks")
-        print("5. Show Topper in Math")
-        print("6. Show Topper in Science")
-        print("7. Show Topper in English")
-        print("8. Create Backup")
-        print("9. Change Email")
-        print("10. Change Password")
-        print("11. Exit")
+        print("5. Show Topper in a Subject")
+        print("6. Create Backup")
+        print("7. Change Email")
+        print("8. Change Password")
+        print("9. Exit")
         choice = input("Enter choice: ")
         if choice == "1":
             add_student()
@@ -175,18 +223,16 @@ if login(user_data):
         elif choice == "4":
             update_marks()
         elif choice == "5":
-            topper("Math")
+            topper()
         elif choice == "6":
-            topper("Science")
-        elif choice == "7":
-            topper("English")
-        elif choice == "8":
             backup_data()
-        elif choice == "9":
+        elif choice == "7":
             change_email(user_data)
-        elif choice == "10":
+        elif choice == "8":
             change_password(user_data)
-        elif choice == "11":
+        elif choice == "9":
+            print("Saving data before exit...")
+            backup_data()   # Auto-backup on exit
             print("Exiting program...")
             break
         else:
