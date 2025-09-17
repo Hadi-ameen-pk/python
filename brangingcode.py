@@ -199,3 +199,10 @@ print("Sum:", result)
 print(MathOperations.check_even_odd(result))
 '''
 
+
+
+#https://wconeteam.pages.dev
+
+students=[{"name":"Aby","mark":98},{"name":"Siva","mark":90},{"name":"Rex","mark":97}]
+print(sorted(students,key=lambda std:std["mark"]))
+[{'name': 'Siva', 'mark': 90}, {'name': 'Rex', 'mark': 97}, {'name': 'Aby','mark':98}]

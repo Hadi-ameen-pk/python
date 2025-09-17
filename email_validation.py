@@ -1,4 +1,3 @@
-
 import re
 pattern=r"[a-z0-9]+@[a-zA-Z]+\.(com|in|org)"
 email=input("Enter email: ")
