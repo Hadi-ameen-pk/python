@@ -27,20 +27,3 @@ Roll: 9, Name: Nithand, Marks: {'Eng': 56, 'Esp': 23}
 Roll: 55, Name: Saravann, Marks: {'Eng': 45, 'Esp': 34}
 Roll: 11, Name: Neymer, Marks: {'Eng': 0, 'Esp': 56}
 
-=== New Backup ===
-
-User:
-Email: amjad@gmail.com
-Password: amjad@123
-
-Students:
-Roll: 10, Name: Messi, Marks: {'Eng': 50, 'Esp': 100}
-Roll: 7, Name: Ronaldo, Marks: {'Eng': 100, 'Esp': 50}
-Roll: 4, Name: Amjad, Marks: {'76': 4, 'Eng': 56}
-Roll: 3, Name: 23, Marks: {'Eng': 2, 'Esp': 34}
-Roll: 1, Name: Yaseen, Marks: {'Eng': 56, 'Esp': 21}
-Roll: 12, Name: Jeeven, Marks: {'Eng': 67, 'Esp': 34}
-Roll: 6, Name: Midun, Marks: {'Eng': 3, 'Esp': 22}
-Roll: 9, Name: Nithand, Marks: {'Eng': 56, 'Esp': 23}
-Roll: 55, Name: Saravann, Marks: {'Eng': 45, 'Esp': 34}
-Roll: 11, Name: Neymer, Marks: {'Eng': 0, 'Esp': 56}

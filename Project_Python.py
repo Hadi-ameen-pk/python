@@ -32,12 +32,12 @@ def register():
     return {"email": email, "password": password}
 
 # ---------- Login ----------
-def login(user_data):
+def login(user_dict):
     print("=== Sign In ===")
     for _ in range(3):
-        e = input("Enter email: ")
-        p = input("Enter password: ")
-        if e == user_data.get("email") and p == user_data.get("password"):
+        entered_email = input("Enter email: ")
+        entered_pass = input("Enter password: ")
+        if entered_email == user_dict.get("email") and entered_pass == user_dict.get("password"):
             print("Login successful!\n")
             return True
         else:
@@ -53,18 +53,19 @@ def logout():
     return False
 
 # ---------- Change Email ----------
-def change_email(user_data):
+def change_email(user_dict):
     while True:
         new_email = input("Enter new email: ")
         if re.fullmatch(pattern, new_email):
-            user_data["email"] = new_email
+            user_dict["email"] = new_email
             print("Email changed successfully!")
+            backup_data()
             break
         else:
             print("Invalid email format! Try again.")
 
 # ---------- Change Password ----------
-def change_password(user_data):
+def change_password(user_dict):
     while True:
         new_pass = input("Enter new password: ")
         if len(new_pass) < 6:
@@ -74,8 +75,9 @@ def change_password(user_data):
         elif new_pass.isalpha():
             print("Invalid password (cannot be only letters)")
         else:
-            user_data["password"] = new_pass
+            user_dict["password"] = new_pass
             print("Password changed successfully!")
+            backup_data()
             break
 
 # ---------- Student Functions ----------
@@ -85,7 +87,7 @@ def add_student():
             name = input("Enter student name: ").strip().title()
             if not name:
                 print("Name cannot be empty!")
-            elif not all(x.isalpha() or x.isspace() for x in name):
+            elif not all(ch.isalpha() or ch.isspace() for ch in name):
                 print("Name must contain only letters and spaces!")
             else:
                 break
@@ -101,11 +103,11 @@ def add_student():
             if subject == "":
                 break
             try:
-                m = int(input(f"Enter marks for {subject}: "))
+                mark_value = int(input(f"Enter marks for {subject}: "))
             except ValueError:
                 print("Invalid input, setting marks = 0")
-                m = 0
-            marks[subject] = m
+                mark_value = 0
+            marks[subject] = mark_value
 
         if not marks:
             print("No subjects entered, student not added.")
@@ -116,24 +118,24 @@ def add_student():
         unique_rolls.add(roll)
         print("Student added successfully!")
 
-    except Exception as e:
-        print("Error:", e)
+    except Exception as err:
+        print("Error:", err)
 
 # ---------- Display Students (Sorted by Roll No) ----------
 def display_students():
     if not students:
         print("No students available")
         return
-    sorted_students = sorted(students, key=lambda s: s['roll'])
-    for s in sorted_students:
-        print(f"Roll: {s['roll']}, Name: {s['name']}, Marks: {s['marks']}")
+    sorted_students = sorted(students, key=lambda stu: stu['roll'])
+    for student in sorted_students:
+        print(f"Roll: {student['roll']}, Name: {student['name']}, Marks: {student['marks']}")
 
 # ---------- Search Student ----------
 def search_student():
-    search = input("Enter roll or name to search: ").title()
-    for s in students:
-        if str(s["roll"]) == search or s["name"] == search:
-            print("Found:", s)
+    search_value = input("Enter roll or name to search: ").title()
+    for student in students:
+        if str(student["roll"]) == search_value or student["name"] == search_value:
+            print("Found:", student)
             return
     print("Student not found")
 
@@ -141,12 +143,12 @@ def search_student():
 def update_marks():
     try:
         roll = int(input("Enter roll number to update: "))
-        for s in students:
-            if s["roll"] == roll:
+        for student in students:
+            if student["roll"] == roll:
                 subject = input("Enter subject name: ").title()
-                if subject in s["marks"]:
+                if subject in student["marks"]:
                     new_mark = int(input(f"Enter new marks for {subject}: "))
-                    s["marks"][subject] = new_mark
+                    student["marks"][subject] = new_mark
                     print("Marks updated successfully!")
                     return
                 print("Subject not found for this student")
@@ -159,15 +161,15 @@ def update_marks():
 def remove_subject():
     try:
         roll = int(input("Enter roll number of the student: "))
-        for s in students:
-            if s["roll"] == roll:
-                if not s["marks"]:
+        for student in students:
+            if student["roll"] == roll:
+                if not student["marks"]:
                     print("No subjects to remove for this student.")
                     return
-                print(f"Subjects available: {', '.join(s['marks'].keys())}")
+                print(f"Subjects available: {', '.join(student['marks'].keys())}")
                 subject = input("Enter subject to remove: ").title()
-                if subject in s["marks"]:
-                    del s["marks"][subject]
+                if subject in student["marks"]:
+                    del student["marks"][subject]
                     print(f"Subject '{subject}' removed successfully!")
                 else:
                     print("Subject not found for this student")
@@ -176,41 +178,41 @@ def remove_subject():
     except ValueError:
         print("Invalid input")
 
-# ---------- Topper Function (Sorted by Marks Desc) ----------
+# ---------- Topper Function ----------
 def topper():
     if not students:
         print("No students available")
         return
 
     subject = input("Enter subject to find topper: ").title()
-    available_subjects = {sub for s in students for sub in s["marks"]}
+    available_subjects = {sub for student in students for sub in student["marks"]}
     if subject not in available_subjects:
         print(f"No student has subject '{subject}'.")
         return
 
-    students_with_subject = [s for s in students if subject in s["marks"]]
-    sorted_students = sorted(students_with_subject, key=lambda s: s["marks"][subject], reverse=True)
+    students_with_subject = [student for student in students if subject in student["marks"]]
+    sorted_students = sorted(students_with_subject, key=lambda stu: stu["marks"][subject], reverse=True)
 
     highest_mark = sorted_students[0]["marks"][subject]
-    top_students = [s for s in sorted_students if s["marks"][subject] == highest_mark]
+    top_students = [student for student in sorted_students if student["marks"][subject] == highest_mark]
 
     print(f"\nTopper(s) in {subject}:")
-    for s in top_students:
-        print(f"Roll: {s['roll']}, Name: {s['name']}, Marks: {s['marks'][subject]}")
+    for student in top_students:
+        print(f"Roll: {student['roll']}, Name: {student['name']}, Marks: {student['marks'][subject]}")
 
-# ---------- Backup Data (Avoid Duplicate Backups) ----------
+# ---------- Backup Data ----------
 def backup_data():
     backup_str = "\n=== Backup Data ===\n"
     backup_str += "User:\n"
     backup_str += f"Email: {user_data.get('email', '')}\n"
     backup_str += f"Password: {user_data.get('password', '')}\n\n"
     backup_str += "Students:\n"
-    for s in students:
-        backup_str += f"Roll: {s['roll']}, Name: {s['name']}, Marks: {s['marks']}\n"
+    for student in students:
+        backup_str += f"Roll: {student['roll']}, Name: {student['name']}, Marks: {student['marks']}\n"
 
     try:
-        with open("backup.txt", "r") as f:
-            existing_data = f.read()
+        with open("backup.txt", "r", encoding="utf-8") as file:
+            existing_data = file.read()
     except FileNotFoundError:
         existing_data = ""
 
@@ -218,19 +220,19 @@ def backup_data():
         print("Backup already exists, skipping duplicate entry.")
         return
 
-    with open("backup.txt", "a") as f:
-        f.write(backup_str)
+    with open("backup.txt", "a", encoding="utf-8") as file:
+        file.write(backup_str)
     print("Backup saved to backup.txt")
 
 # ---------- Load Backup ----------
 def load_backup():
     global students, unique_rolls, user_data
     try:
-        with open("backup.txt", "r") as f:
-            lines = f.readlines()
+        with open("backup.txt", "r", encoding="utf-8") as file:
+            lines = file.readlines()
         current_section = None
-        students = []
-        user_data = {}
+        students.clear()
+        user_data.clear()
         for line in lines:
             line = line.strip()
             if line.startswith("User:"):
@@ -250,9 +252,12 @@ def load_backup():
                 for m in marks_str.strip("{} ").split(","):
                     if ":" in m:
                         key, val = m.split(":")
-                        marks[key.strip().strip("'").strip('"')] = int(val.strip())
+                        try:
+                            marks[key.strip().strip("'").strip('"')] = int(val.strip())
+                        except ValueError:
+                            marks[key.strip().strip("'").strip('"')] = 0
                 students.append({"name": name, "roll": roll, "marks": marks})
-        unique_rolls = {s["roll"] for s in students}
+        unique_rolls = {student["roll"] for student in students}
         if students or user_data:
             print("Backup loaded successfully!")
     except FileNotFoundError:
@@ -282,7 +287,7 @@ if login(user_data):
         print("2. Display Students (Sorted by Roll No)")
         print("3. Search Student")
         print("4. Update Marks")
-        print("5. Show Topper in a Subject (Sorted by Marks Desc)")
+        print("5. Show Topper in a Subject")
         print("6. Create Backup")
         print("7. Change Email")
         print("8. Change Password")
@@ -317,6 +322,5 @@ if login(user_data):
             backup_data()
             print("Exiting program...")
             break
-
         else:
             print("Invalid choice, try again.")
